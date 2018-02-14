@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>&lt;hang&gt; API</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Raleway');
+        body{margin-top:5em;text-align:center;font-family: 'Raleway', sans-serif;}
+        img{
+            width: 200px;
+            margin-top: 2em;
+            border-radius: .3em;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+        }
+        #docs {
+            text-align: left;
+            max-width: 600px;
+            margin-top: 2em;
+            margin-bottom: 5em;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        #docs li {
+            padding-top: 1em;
+        }
+        #docs pre {
+            border: solid 2px black;
+            border-radius: .2em;
+            padding-top: .5em;
+            padding-left: .5em;
+            padding-bottom: .5em;
+            background-color: #dfdfdf;
+        }
+    </style>
+</head>
+<body>
+    <h1>&lt;hang&gt; API</h1>
+    <img src="/static/dev.gif">
+    
+    <div id="docs">
+        <h3>MiniDocs</h3>
+        <ul>
+            {% for item in endpoins %}
+                <li>{{'🔐' if item['protected'] }} {{item['name']}} : {{item['description']}}</li>
+                <pre>[{{ item['verb']}}] <a target="_blank" href="{{ item['url'] }}">{{ item['urlshow'] if item['urlshow'] else item['url'] }}</a></pre>
+            {% endfor %}
+        </ul>
+    </div>
+
+</body>
+</html>

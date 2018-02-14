@@ -1,0 +1,9 @@
+# Ignore virtual env folder
+*_env
+
+# pyc files
+*.pyc
+
+# misc DB files
+*.db-journal
+*.bak
