@@ -77,8 +77,7 @@ class HangTestCase(TestCase):
             print LibraryWord.get_random()
         print "=============================\n"
 
-    def test_word_add(self):
-
+    def test_require_key_decorator(self):
         # no key 
         response = self.client.put( url_for("word.add", word="Killmonger") )
         assert response.status_code == 401
@@ -90,4 +89,19 @@ class HangTestCase(TestCase):
         assert response.status_code == 200
         assert LibraryWord.query.filter_by(word=word_to_add).first()
 
+    def test_word_add(self):
+        
+        KEY = "TEST_KEY"
+        word_to_add = "Wakanda"
+        response = self.client.put( url_for("word.add", word=word_to_add, key=KEY) )
+        assert response.status_code == 200
+        assert LibraryWord.query.filter_by(word=word_to_add).first()
+
+    def test_word_delete(self):
+        KEY = "TEST_KEY"
+        word_to_remove = "filament"
+        response = self.client.delete( url_for("word.delete", word=word_to_remove, key=KEY) )
+        assert response.status_code == 200
+        assert not LibraryWord.query.filter_by(word=word_to_remove).first()
+        
     

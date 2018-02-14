@@ -11,12 +11,12 @@ def add(word):
     w = LibraryWord(word)
     db.session.add(w)
     db.session.commit()
-    
-    return "Word added : " + word, 200
+    return "Word added", 200
 
-
+@require_key
 @word.route('/delete/<word>', methods=['DELETE'])
-def delete():
-    return "Word deleted"
+def delete(word):
+    LibraryWord.query.filter_by(word=word).delete()
+    return "Word deleted", 200
 
 
