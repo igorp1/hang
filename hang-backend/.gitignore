@@ -7,3 +7,4 @@
 # misc DB files
 *.db-journal
 *.bak
+*.sqlite

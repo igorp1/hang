@@ -17,19 +17,20 @@ class Word(db.Model):
     
 
 class Game(db.Model):
-    id = db.Column(db.String(6), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String(6))
     word = db.Column(db.String(45), unique=True, nullable=False)
     db.Column(db.String(45), unique=True, nullable=False)
     guesses = db.relationship('Guess', backref="game", lazy="dynamic")
 
     def __init__(self, word, created_by=None):
-        self.ID = uuid.uuid4().hex[:6]
+        self.code = uuid.uuid4().hex[:6]
         self.word = word
 
 class Guess(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     letter = db.Column(db.String(1), nullable=True)
-    game_id = db.Column(db.String(6), db.ForeignKey('game.id'), nullable=False )
+    game_id = db.Column(db.Integer, db.ForeignKey('game.id'), nullable=False )
 
 
 
