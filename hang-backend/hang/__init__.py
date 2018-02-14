@@ -1,5 +1,5 @@
 from .configs import configs
-from flask import Flask, render_template, request
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 # =====
