@@ -1,0 +1,24 @@
+#main-container{
+    margin-top: 3em;
+}
+
+header{
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+    text-align: center;
+    background-color: #4D5052;
+    position: fixed;
+    top:0;
+    left:0;
+    width: 100vw;
+    height: 3.5em;
+}
+
+header > h1{
+    margin: 0;
+}
+
+#router-outlet-container{
+    padding: 1em;
+}
+
+
