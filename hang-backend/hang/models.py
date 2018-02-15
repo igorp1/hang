@@ -43,7 +43,7 @@ class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String(6), unique=True)
     word = db.Column(db.String(45), nullable=False)
-    status = db.Column(db.String(10), nullable=False) # playing|won|lost
+    status = db.Column(db.String(10), nullable=False, default='playing') # playing|won|lost
     guesses = db.relationship("Guess", backref="game", lazy="dynamic")
 
     def __init__(self, word, created_by=None):
