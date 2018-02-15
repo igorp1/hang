@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'word-display',
@@ -6,6 +6,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./word-display.component.css']
 })
 export class WordDisplayComponent implements OnInit {
+
+  @Input()
+  word : String;
 
   constructor() { }
 

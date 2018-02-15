@@ -3,6 +3,8 @@
 /* FONTS */
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 @import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
+
+@import url('https://fonts.googleapis.com/css?family=VT323');
 /* PURE */
 @import url('https://unpkg.com/purecss@1.0.0/build/pure-min.css');
 @import url('https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css');
@@ -10,7 +12,7 @@
 body {
     font-family: 'Open Sans', sans-serif;
     padding: 1em;
-    background-color: #B8BEC2;
+    background-color: #4E4E50;
 }
 
 .center{text-align: center}
@@ -31,14 +33,20 @@ button{
     box-shadow: 1px 1px 0px #e62546;
 }
 
-button:hover{
+button:not(.disabled):hover{
     background-color: #e4e4e4;
     box-shadow: 2px 2px 0px #e62546;
 }
 
-button:active{
+button:not(.disabled):active{
     color: black;
     background-color: #e62546;
     box-shadow: 1px 1px 0px #e62546;
+}
+
+button.disabled{
+    cursor: no-drop;
+    background-color: #1A1A1D;
+    color: #4E4E50;
 }
 

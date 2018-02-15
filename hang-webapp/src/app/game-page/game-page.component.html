@@ -1,7 +1,4 @@
-<p>
-  game-page works!
-</p>
-
-<word-display></word-display>
-
-<keyboard></keyboard>
+<div>
+  <word-display [word]="'3dhubs'"></word-display>
+  <keyboard (readKey)="typedKey($event)"></keyboard>
+</div>

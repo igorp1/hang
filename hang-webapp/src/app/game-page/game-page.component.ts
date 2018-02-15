@@ -12,4 +12,8 @@ export class GamePageComponent implements OnInit {
   ngOnInit() {
   }
 
+  typedKey(key:string){
+    console.log(`USER CHOSE ${key}`)
+  }
+
 }
