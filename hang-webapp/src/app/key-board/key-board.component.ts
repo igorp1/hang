@@ -7,10 +7,8 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 export class KeyBoardComponent implements OnInit {
 
   characterSetup: Array< Array<string> >;
-  @Input()
-  keyLogger:Array<string> = [];
-  @Output() 
-  readKey: EventEmitter<String> = new EventEmitter();
+  @Input() keyLogger:Array<string> = [];
+  @Output() readKey: EventEmitter<String> = new EventEmitter();
 
 
   constructor() { }
