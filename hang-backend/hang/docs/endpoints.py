@@ -2,7 +2,7 @@
 # define API endpoints for MiniDocs
 api_endpoints = [
     {
-        'name':'add_word',
+        'name':'Add Word',
         'description':'Adds new word to the hangman library.',
         'url':'word/add/example',
         'urlshow':'/word/add/:word',
@@ -10,7 +10,7 @@ api_endpoints = [
         'protected':True
     },
     {
-        'name':'delete_word',
+        'name':'Delete Word',
         'description':'Deletes a word to the hangman library.',
         'url':'/word/delete/example',
         'urlshow':'/word/delete/:word',
@@ -18,16 +18,17 @@ api_endpoints = [
         'protected':True
     },
     {
-        'name':'start_game',
+        'name':'New Game',
         'description':'Starts a new hangman game.',
-        'url':'/game/start',
+        'url':'/game/new',
         'verb':'GET',
         'protected':False
     },
     {
-        'name':'game_check',
+        'name':'Check Game',
         'description':'Checks a letter guess against a given game word.',
-        'url':'/game/:id/check',
+        'urlshow':'/game/:code/check',
+        'url':'game/nc7kA0/check',
         'verb':'POST',
         'protected':False
     }

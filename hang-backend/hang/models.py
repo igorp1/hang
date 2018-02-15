@@ -10,7 +10,6 @@ class LibraryWord(db.Model):
         if not LibraryWord.is_valid_word(word):
             raise ValueError("The word %s given to this constructor is not valid." % word)
         self.word = word
-        self.created_by = created_by
 
     '''
     Returns an array of all indexes where the word matches the test_char
@@ -40,24 +39,119 @@ class LibraryWord(db.Model):
         query_res = LibraryWord.query.order_by(func.random()).limit(1).first()
         return query_res.word
 
-
-    
-
 class Game(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String(6))
-    word = db.Column(db.String(45), unique=True, nullable=False)
-    db.Column(db.String(45), unique=True, nullable=False)
+    code = db.Column(db.String(6), unique=True)
+    word = db.Column(db.String(45), nullable=False)
+    status = db.Column(db.String(10), nullable=False) # playing|won|lost
     guesses = db.relationship("Guess", backref="game", lazy="dynamic")
 
     def __init__(self, word, created_by=None):
         self.code = uuid.uuid4().hex[:6]
         self.word = word
+        self.status = 'playing'
+
+    '''
+    Sets the status of the game based on all of the guesses
+    '''
+    def set_status(self):
+        if self.count_wrong_guesses() >= 5:
+            self.status = 'lost'
+        elif self.count_chars_found() == len(self.word):
+            self.status = 'won'
+        else:
+            self.status = 'playing' # no change here
+        
+    '''
+    Returns how many wrong guesses  
+    '''
+    def count_wrong_guesses(self):
+        fails_count = 0
+        for x in self.guesses:
+            res = LibraryWord(self.word).has_char( x.letter )
+            if res == []: fails_count += 1
+        return fails_count
+
+    '''
+    Returns how many characters were found in the word.
+    '''
+    def count_chars_found(self):
+        return len(self.get_found_positions())
+
+    '''
+    Returns an array of all the position 
+    '''
+    def get_found_positions(self):
+        found_arr = []
+        for x in self.guesses:
+            found_arr += LibraryWord(self.word).has_char( x.letter )
+        return found_arr
+
+    '''
+    Returns an object with the result of checking the guess
+    '''
+    def check_guess(self, guess):
+        
+        # commit guess
+        guess_obj = Guess(guess, self.code)
+        db.session.add(guess_obj)
+        db.session.commit()
+
+        # check position
+        positions = LibraryWord(self.word).has_char(guess)
+
+        # evaluate and set current status
+        self.set_status()
+
+        return {
+            "found":len(positions)>0,
+            "positions":positions,
+            "status":self.status,
+        }
+
+    '''
+    Returns the game object of a given code
+    '''
+    @staticmethod
+    def by_code(code):
+        return Game.query.filter_by(code=code).first()
+
+    '''
+    Creates a new game and returns its object 
+    '''
+    @staticmethod 
+    def start_new():
+        word = LibraryWord.get_random()
+        game = Game(word)
+        db.session.add(game)
+        db.session.commit()
+        return game
 
 class Guess(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    letter = db.Column(db.String(1), nullable=True)
+    letter = db.Column(db.String(1), nullable=True) #obs, could also be a number
     game_id = db.Column(db.Integer, db.ForeignKey("game.id"), nullable=False )
 
+    def __init__(self, guess, game_code):
+        if not Guess.is_valid(guess):
+            raise ValueError("The guess (%s) passed to this contructor is not a valid." % guess)
+        if Guess.is_guess_on_game(guess, game_code):
+            raise ValueError("The guess (%s) has already been guessed on this game." % guess)
+        self.letter = guess
+        self.game_id = Game.by_code(game_code).id
 
+    '''
+    Returns whether a given guess is valid or not. Expects single letter or digit
+    '''
+    @staticmethod
+    def is_valid(guess):
+        return re.match("[a-zA-Z0-9]{1}$", guess)
+
+    '''
+    Returns whether a character has been guessed in a game  
+    '''
+    @staticmethod
+    def is_guess_on_game(guess, game_code):
+        g = Game.by_code(game_code)
+        return bool( g.guesses.filter_by(letter=guess).first() )
 

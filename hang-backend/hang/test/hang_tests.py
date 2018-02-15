@@ -2,6 +2,7 @@ from flask_testing import TestCase
 from flask import url_for
 import hang
 import os
+import json
 from hang.models import LibraryWord, Game, Guess
 
 
@@ -72,10 +73,12 @@ class HangTestCase(TestCase):
 
         # if you want to check randomness you can run:
         # "nosetests --nocapture" to see the output
-        print "\n=== test_word_get_random ===="
-        for i in range(0,10):
-            print LibraryWord.get_random()
-        print "=============================\n"
+        check_words = False
+        if check_words:
+            print "\n=== test_word_get_random ===="
+            for i in range(0,10):
+                print LibraryWord.get_random()
+            print "=============================\n"
 
     def test_require_key_decorator(self):
         # no key 
@@ -104,4 +107,76 @@ class HangTestCase(TestCase):
         assert response.status_code == 200
         assert not LibraryWord.query.filter_by(word=word_to_remove).first()
         
+    # GAME TESTS
+    def get_game_by_code(self):
+        # make new game
+        g = Game("molding")
+        db.session.add(g)
+        db.session.commit()
+
+        # get by code
+        CODE = g.code
+        g_test = Game.by_code(CODE)
+        assert g == g_test
+
+    def test_game_start(self):
+        
+        response = self.client.get( url_for("game.new") )
+        assert response.status_code == 200
+
+        response_expected_fields = ["word_length","game_code"]
+        body = json.loads(response.get_data(as_text=True))
+
+        for x in response_expected_fields:
+            assert x in body
+
+    def test_game_check(self):
+
+        # create game => 
+        g = Game.start_new()
+        game_code = g.code
+        word = g.word
+
+        # check a letter that doesn't belongs to the game word 
+        L1 = 'X' # we know for sure none of the words contain X
+        response = self.client.post( url_for("game.check", code=game_code),
+                                    data=json.dumps(dict(guess=L1)),  
+                                    content_type='application/json')
+        assert response.status_code == 200
+
+        result = json.loads(response.get_data(as_text=True))
+        assert result['found'] == False
+        assert result['positions'] == []
+        assert result['status'] == 'playing'
+
+        # check a char that belongs to the game word 
+        L2 = word[0] # on the setup all first chars are unique to the word
+        response = self.client.post( url_for("game.check", code=game_code),
+                                    data=json.dumps(dict(guess=L2)),  
+                                    content_type='application/json')
+        assert response.status_code == 200
+
+
+        result = json.loads(response.get_data(as_text=True))
+        assert result['found'] == True
+        assert result['positions'] == [0]
+        assert result['status'] == 'playing'
+
+        # check a char that belongs to the game word more than once
+        L3 = word[0] # on the setup all first chars are unique to the word
+        response = self.client.post( url_for("game.check", code=game_code),
+                                    data=json.dumps(dict(guess=L3)),
+                                    content_type='application/json')
+        assert response.status_code == 400
+
+        # check a character that is not valid
+        L4 = '?'
+        response = self.client.post( url_for("game.check", code=game_code),
+                                    data=json.dumps(dict(guess=L4)),
+                                    content_type='application/json')
+        assert response.status_code == 400
+
+
+        
+
     

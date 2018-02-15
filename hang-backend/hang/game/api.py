@@ -1,19 +1,24 @@
 from . import game
 from .. import db
-from ..models import Game
+from ..models import Game, Guess
+from flask import jsonify, request
 
-import re
+@game.route('/new', methods=['GET'])
+def new():
+    g = Game.start_new()
+    response_obj = {
+        'word_length': len(g.word),
+        'game_code': g.code
+    }
+    return jsonify(response_obj), 200
 
-@game.route('/start', methods=['GET'])
-def game_start():
-    return "Game started"
-
-
-@game.route('/check', methods=['POST'])
-def game_check():
-    if not request.form["letter"]:
+@game.route('/<code>/check', methods=['POST'])
+def check(code):
+    if 'guess' not in request.get_json():
         return "Must pass letter in the request form", 400
-    if not re.match("^[a-zA-Z]{1}$", request.form["letter"]):
-        return "Must pass a single letter", 400
-    return "Letter ({0}) found ".format(request.form["letter"])
-
+    if not Guess.is_valid(request.get_json()["guess"]):
+        return "Must pass a single letter or number", 400
+    if Guess.is_guess_on_game(request.get_json()["guess"], code):
+        return "Cannot guess the same thing twice", 400
+    guess_result = Game.by_code(code).check_guess(str(request.get_json()["guess"]))
+    return jsonify(guess_result), 200
