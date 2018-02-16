@@ -9,6 +9,7 @@ import { GamePageComponent } from './game-page/game-page.component';
 import { LeaderboardPageComponent } from './leaderboard-page/leaderboard-page.component';
 import { WordDisplayComponent } from './word-display/word-display.component';
 import { KeyBoardComponent } from './key-board/key-board.component';
+import { HangingManComponent } from './hanging-man/hanging-man.component';
 
 export const ROUTES: Routes = [
   { path: '', component: HomePageComponent },
@@ -23,7 +24,8 @@ export const ROUTES: Routes = [
     GamePageComponent,
     LeaderboardPageComponent,
     WordDisplayComponent,
-    KeyBoardComponent
+    KeyBoardComponent,
+    HangingManComponent
   ],
   imports: [
     BrowserModule,

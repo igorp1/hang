@@ -1,0 +1,8 @@
+<ng-container [ngSwitch]="attempts">
+    <img *ngSwitchCase="0" [style.width]="width" src="assets/hangman/hangman_0.png">
+    <img *ngSwitchCase="1" [style.width]="width" src="assets/hangman/hangman_1.png">
+    <img *ngSwitchCase="2" [style.width]="width" src="assets/hangman/hangman_2.png">
+    <img *ngSwitchCase="3" [style.width]="width" src="assets/hangman/hangman_3.png">
+    <img *ngSwitchCase="4" [style.width]="width" src="assets/hangman/hangman_4.png">
+    <img *ngSwitchCase="5" [style.width]="width" src="assets/hangman/hangman_5.png">
+</ng-container>

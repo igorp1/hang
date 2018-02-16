@@ -1,4 +1,5 @@
 <div>
-  <word-display [word]="gameWord"></word-display>
+  <div style="position: absolute;"><hanging-man [width]="'70px'" [attempts]="game.attempts"></hanging-man></div>
+  <word-display [word]="game.word"></word-display>
   <keyboard (readKey)="typedKey($event)"></keyboard>
 </div>
