@@ -3,7 +3,6 @@
 /* FONTS */
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
 @import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
-
 @import url('https://fonts.googleapis.com/css?family=VT323');
 /* PURE */
 @import url('https://unpkg.com/purecss@1.0.0/build/pure-min.css');
@@ -26,7 +25,7 @@ button{
     padding-top: .5em;
     padding-bottom: .5em;
     border-radius: .25em;
-    border: solid 3px black;
+    border: solid 3px #1A1A1D;
     background-color: #d0d0d0;
     color: #e62546;
     font-weight: bold;
@@ -39,7 +38,7 @@ button:not(.disabled):hover{
 }
 
 button:not(.disabled):active{
-    color: black;
+    color: #1A1A1D;
     background-color: #e62546;
     box-shadow: 1px 1px 0px #e62546;
 }

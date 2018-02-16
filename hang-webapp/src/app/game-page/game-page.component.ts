@@ -7,6 +7,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamePageComponent implements OnInit {
 
+  gameWord : string = "3D HUBS"
+
   constructor() { }
 
   ngOnInit() {
