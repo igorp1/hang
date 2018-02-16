@@ -1,12 +1,19 @@
 <div class="center main-container">
 
-  <h1>{{greeting}}</h1>
+  <h1 class="fancy-font">{{greeting}}</h1>
   <p id="game-instructors">
 
   </p>
   
   <div class="actions">
-    <button (click)="newGame()">NEW GAME</button>
+    <button (click)="newGame()">
+      <ng-container [ngSwitch]="this._game.loading">
+          <ng-container *ngSwitchCase="true">
+            <img src="assets/loading.gif">
+          </ng-container>
+        <ng-container *ngSwitchCase="false">NEW GAME</ng-container>
+      </ng-container>
+    </button>
     <button (click)="openLeaderboard()">LEADERBOARD</button>
   </div>
     

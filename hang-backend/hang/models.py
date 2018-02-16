@@ -1,6 +1,6 @@
 import uuid, re
 from hang import db
-from  sqlalchemy.sql.expression import func
+from sqlalchemy.sql.expression import func
 
 class LibraryWord(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -61,6 +61,7 @@ class Game(db.Model):
             self.status = 'won'
         else:
             self.status = 'playing' # no change here
+        db.session.commit()
         
     '''
     Returns how many wrong guesses  
@@ -82,9 +83,11 @@ class Game(db.Model):
     Returns an array of all the position 
     '''
     def get_found_positions(self):
-        found_arr = []
+        found_arr = dict()
         for x in self.guesses:
-            found_arr += LibraryWord(self.word).has_char( x.letter )
+            positions = LibraryWord(self.word).has_char( x.letter )
+            if positions:
+                found_arr[x.letter] = positions
         return found_arr
 
     '''
@@ -108,6 +111,28 @@ class Game(db.Model):
             "positions":positions,
             "status":self.status,
         }
+
+    '''
+    Return the guesses as an array of strings
+    '''
+    def get_array_of_guesses(self):
+        guesses_arr = []
+        for x in self.guesses:
+            guesses_arr += [x.letter]
+        return guesses_arr
+
+    '''
+    Return an object with all necessary information to load it from scratch 
+    '''
+    def get_load_object(self):
+        return dict(
+            status = self.status,
+            attempts = self.get_array_of_guesses(),
+            wordLength = len(self.word),
+            foundChars = self.get_found_positions(),
+            mistakeCount = self.count_wrong_guesses()
+        )
+
 
     '''
     Returns the game object of a given code

@@ -1,6 +1,7 @@
 from .configs import configs
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
 
 # =====
 # DB
@@ -12,6 +13,9 @@ def build_app(config_name):
 
     app = Flask(__name__)
     app.config.from_object( configs[config_name] )
+
+    # CORS
+    CORS(app)
 
     # DB
     db.init_app(app)

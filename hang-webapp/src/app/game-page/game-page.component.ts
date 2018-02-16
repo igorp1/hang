@@ -9,6 +9,9 @@ import { GameApiService } from '../_services/game-api.service';
 })
 export class GamePageComponent implements OnInit {
 
+  JSON : JSON = JSON;
+  viewDebugger :  boolean = false;
+
   constructor(private route : ActivatedRoute, private _game : GameApiService) {
     route.params.subscribe( (d) => this._game.setupWithCode(d.code) );
   }
@@ -18,5 +21,11 @@ export class GamePageComponent implements OnInit {
   typedKey(key:string){
     this._game.checkGuess(key);
   }
+
+  newGame(){
+
+  }
+
+  
 
 }

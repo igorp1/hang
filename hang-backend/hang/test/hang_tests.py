@@ -156,7 +156,6 @@ class HangTestCase(TestCase):
                                     content_type='application/json')
         assert response.status_code == 200
 
-
         result = json.loads(response.get_data(as_text=True))
         assert result['found'] == True
         assert result['positions'] == [0]
@@ -176,6 +175,46 @@ class HangTestCase(TestCase):
                                     content_type='application/json')
         assert response.status_code == 400
 
+    def test_load_game(self):
+
+        # create game => 
+        g = Game.start_new()
+        game_code = g.code
+        word = g.word
+
+        # load a game that does not exist
+        response = self.client.get( url_for("game.load", code='X') )
+        assert response.status_code == 404
+
+        # verify the info on the game you created
+        response = self.client.get( url_for("game.load", code=game_code) )
+        assert response.status_code == 200
+
+        result = json.loads(response.get_data(as_text=True))
+        
+        assert result['status'] == 'playing'
+        assert result['attempts'] == []
+        assert result['wordLength'] == len(word)
+        assert result['foundChars'] == {}
+        assert result['mistakeCount'] == 0
+
+        # after a guess
+        L1 = word[0]
+        response = self.client.post( url_for("game.check", code=game_code),
+                                    data=json.dumps(dict(guess=L1)),
+                                    content_type='application/json')
+        assert response.status_code == 200
+
+        response = self.client.get( url_for("game.load", code=game_code) )
+        assert response.status_code == 200
+
+        result = json.loads(response.get_data(as_text=True))
+        assert result['status'] == 'playing'
+        assert result['attempts'] == [ L1 ]
+        assert result['wordLength'] == len(word)
+        assert L1 in result['foundChars']
+        assert result['foundChars'][L1] == [0]
+        assert result['mistakeCount'] == 0
 
         
 

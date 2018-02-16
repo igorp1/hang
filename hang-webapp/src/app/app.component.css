@@ -1,5 +1,6 @@
 #main-container{
     margin-top: 3em;
+    margin-bottom: 3em;
 }
 
 header{
@@ -28,6 +29,7 @@ footer{
     position: fixed;
     padding-bottom: .2em; 
     border-top: solid 1px black; 
+    background-color: #4E4E50;
 }
 
 footer span{

@@ -7,7 +7,8 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 export class KeyBoardComponent implements OnInit {
 
   characterSetup: Array< Array<string> >;
-  @Input() keyLogger:Array<string> = [];
+  @Input() disabled:Array<string> = [];
+  @Output() disabledChange : EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
   @Output() readKey: EventEmitter<String> = new EventEmitter();
 
 
@@ -33,8 +34,10 @@ export class KeyBoardComponent implements OnInit {
     this.characterSetup = characterOrders[setupName];
   }
 
-  clickedOn(key, emmitClick=true){
-    this.keyLogger.push(key)
+  clickedOn(key, enabled, emmitClick=true){
+    if(!enabled){return;}
+    this.disabled.push(key)
+    this.disabledChange.emit(this.disabled);
     if(emmitClick){
       this.readKey.emit(key);
     }

@@ -1,5 +1,45 @@
 <div>
-  <div style="position: absolute;"><hanging-man [width]="'70px'" [attempts]="_game.attempts"></hanging-man></div>
+  <div id="hanging-man-container"><hanging-man [width]="'70px'" [attempts]="_game.mistakes"></hanging-man></div>
   <word-display [word]="_game.loading ? 'loading...' : _game.wordDisplay"></word-display>
-  <keyboard (readKey)="typedKey($event)"></keyboard> 
+  <ng-container *ngIf="!_game.errorFlag" [ngSwitch]="_game._status">
+
+    <ng-container *ngSwitchCase="'playing'">
+      <keyboard (readKey)="typedKey($event)" [(disabled)]="_game.attempts"></keyboard> 
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'won'">
+      <!-- WON MESSAGE -->
+      <div class="center">
+          <div class="center">
+              <h2 class="fancy-font">🏆 Good job!</h2>
+              <button>PLAY AGAIN</button>
+              <button>CHALLENGE A FRIEND</button>
+          </div>
+      </div>
+    </ng-container>
+
+    <ng-container *ngSwitchCase="'lost'">
+      <!-- LOST MESSAGE -->
+      <div class="center">
+          <h2 class="fancy-font">😱 Oh no!</h2>
+          <button>TRY AGAIN</button>
+          <button>CHALLENGE A FRIEND</button>
+      </div>
+    </ng-container>
+  </ng-container>
+  <ng-container *ngIf="_game.errorFlag">
+      <!-- WON MESSAGE -->
+      <div class="center">
+          <div class="center">
+              <h2 class="fancy-font">👾 Something went wrong!</h2>
+              <button>BACK HOME</button>
+          </div>
+      </div>
+    </ng-container>
+  
+  <div *ngIf="viewDebugger">
+      <h4>👾 Debug zone</h4>
+      <pre>{{JSON.stringify(_game, undefined, 2)}}</pre>
+  </div>
+  
 </div>

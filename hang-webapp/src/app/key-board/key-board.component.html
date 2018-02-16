@@ -15,7 +15,7 @@
 
       <ng-container *ngIf="c != '_' && c != '.'">
         <div class="pure-u-2-24">
-          <button (click)="clickedOn(c)" [class.disabled]="keyLogger.indexOf(c) != -1">{{c}}</button>
+          <button (click)="clickedOn(c,disabled.indexOf(c) == -1)" [class.disabled]="disabled.indexOf(c) != -1">{{c}}</button>
         </div>
       </ng-container>
 

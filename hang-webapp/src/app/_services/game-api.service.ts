@@ -9,7 +9,8 @@ export class GameApiService {
 
   gameID : number;
   gameCode : string;
-  attempts : Array<string>;
+  mistakes : number = 0;
+  attempts : Array<string> = [];
   wordDisplay : string;
 
   _wordLength : number;
@@ -18,46 +19,106 @@ export class GameApiService {
     this.wordDisplay = Array(value).fill('_').join('');
   };
 
+  _status : string; // playing|won|lost
+  set status(value:string){
+    if(['playing','won','lost'].indexOf(value) == -1){ 
+      throw "The given status is not valid" 
+    }
+    this._status = value;
+    switch(this._status){
+      case 'won':
+        this.wordDisplay = "YOU WON!";
+        break;
+      case 'lost':
+        this.wordDisplay = "GAME OVER";
+    }
+  }
+
   loading : boolean = false;
   errorFlag : boolean = false;
 
   API_base : string = "http://localhost:5000";
 
-  constructor() { }
+  constructor(private http : Http) { }
+
+  cleanup(){
+    this.gameID  = undefined;
+    this.gameCode  = undefined;
+    this.mistakes = 0;
+    this.attempts  = [];
+    this.wordDisplay  = undefined;
+    this._wordLength = undefined;
+    this._status = 'playing';
+    this.loading  = false;
+    this.errorFlag  = false;
+  }
 
   newGame() : Observable<string>{
-    this.wordLength = 6;
-    this.gameCode = 'sjn9mS';
-    return Observable.of(this.gameCode);
+    this.loading = true;
+    this.cleanup()
+    return this.http.get(this.API_base + '/game/new')
+      .map( (res:Response) => res.json() )
+      .map( (gameInfo)=>{ 
+        this.loading = false;
+        this.gameCode = gameInfo.game_code;
+        this.wordLength = gameInfo.word_length;
+        return this.gameCode;
+      },
+      (err)=>this.errorHandler(err)
+    );
   }
 
   setupWithCode( code : string ){
     if(this.gameCode){ return; }
     this.loading = true;
+    this.gameCode = code;
     this.loadGame().subscribe(
       (d)=>{
+        this.mistakes = d.mistakeCount;
         this.attempts = d.attempts;
-        this.wordLength = d.wordLength;
-        Object.keys(d.foundChars).forEach(
-          (key:string)=>this.updateWord(key, d.foundChars[key]) 
-        );
+        if(d.status != 'playing'){
+          this.status = d.status;
+        }
+        else{
+          this.status = 'playing';
+          this.wordLength = d.wordLength;
+          Object.keys(d.foundChars).forEach(
+            (key:string)=>this.updateWord(key, d.foundChars[key]) 
+          );
+        }
         this.loading = false;
-      }
-    );
+      },
+      (err)=>this.errorHandler(err)
+    )
+    ;
   }
 
   loadGame() : Observable<any> {
-    return Observable.of({
-      attempts : [],
-      wordLength : 6,
-      foundChars : {'3': [0], 'H':[2]}
-    });
+    return this.http.get(this.API_base + `/game/${this.gameCode}/load`)
+            .map( (res: Response) => res.json());
+  }
+
+  errorHandler(res:Response){
+    this.loading = false;
+    this.errorFlag = true;
+    this.wordDisplay = res.status == 0 ? '500' : String(res.status);
   }
 
   checkGuess(guess : string){
-     this.fetchGuessPositions(guess).subscribe(
-      (pos)=>this.updateWord(guess,pos) 
-     );
+    this.fetchGuessPositions(guess).subscribe(
+      (guessResult)=>{
+        if(!guessResult['found']){this.mistakes+=1;}
+        this.updateWord(guess,guessResult['positions']);
+        this.status = guessResult['status'];
+      },
+      (err)=>this.errorHandler(err)
+    );
+  }
+
+  fetchGuessPositions(guess : string) : Observable< Array<any> >{
+    return this.http.post(this.API_base + `/game/${this.gameCode}/check`,
+            {'guess':guess})
+            .map((res : Response)=> res.json());
   }
 
   updateWord(character: string, positions : Array<number>){
@@ -69,10 +130,6 @@ export class GameApiService {
       this.wordDisplay += orginalWordDisplay.substring(index+1);
     });
 
-  }
-
-  fetchGuessPositions(guess : string) : Observable< Array<number> >{
-    return Observable.of([0]);
   }
 
 }
