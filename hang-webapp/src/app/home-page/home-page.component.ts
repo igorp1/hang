@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { GameApiService } from '../_services/game-api.service';
 
 @Component({
   selector: 'app-home-page',
@@ -15,15 +16,16 @@ export class HomePageComponent implements OnInit {
     "Wanna <hang>"
   ];
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private _game : GameApiService) { }
 
   ngOnInit() {
     this.greeting = this.greetings[Math.floor(Math.random() * this.greetings.length)];
   }
 
   newGame() {
-    let gameCode = "cRbw76"
-    this.router.navigate(["/game", gameCode]);
+    this._game.newGame().subscribe(
+      (code) => this.router.navigate(["/game", code])
+    );
   }
 
   openLeaderboard(){

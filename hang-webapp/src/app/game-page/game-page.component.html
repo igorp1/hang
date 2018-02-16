@@ -1,5 +1,5 @@
 <div>
-  <div style="position: absolute;"><hanging-man [width]="'70px'" [attempts]="game.attempts"></hanging-man></div>
-  <word-display [word]="game.word"></word-display>
-  <keyboard (readKey)="typedKey($event)"></keyboard>
+  <div style="position: absolute;"><hanging-man [width]="'70px'" [attempts]="_game.attempts"></hanging-man></div>
+  <word-display [word]="_game.loading ? 'loading...' : _game.wordDisplay"></word-display>
+  <keyboard (readKey)="typedKey($event)"></keyboard> 
 </div>

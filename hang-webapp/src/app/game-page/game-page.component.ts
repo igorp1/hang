@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { GameApiService } from '../_services/game-api.service';
 
 @Component({
   selector: 'app-game-page',
@@ -7,27 +9,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class GamePageComponent implements OnInit {
 
-  game : Game = new Game(); // <=== make this into object
-
-  constructor() { }
-
-  ngOnInit() {
-    this.game.word = "3D HUBS";
-    this.game.attempts = 0;
-    setTimeout(()=>this.game.attempts = 1, 1000);
-    setTimeout(()=>this.game.attempts = 2, 2000);
-    setTimeout(()=>this.game.attempts = 3, 3000);
-    setTimeout(()=>this.game.attempts = 4, 4000);
-    setTimeout(()=>{this.game.attempts = 5; this.game.word="GAME OVER";}, 5000);
+  constructor(private route : ActivatedRoute, private _game : GameApiService) {
+    route.params.subscribe( (d) => this._game.setupWithCode(d.code) );
   }
+
+  ngOnInit() { }
 
   typedKey(key:string){
-    console.log(`USER CHOSE ${key}`)
+    this._game.checkGuess(key);
   }
 
-}
-
-class Game{
-  attempts : number;
-  word : string;
 }

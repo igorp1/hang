@@ -39,6 +39,7 @@ export class WordDisplayComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+    if(this._word === undefined) this.word = "~O_O~"; 
     this.loadCanvasContainer();
     this.initThreeObjects();
     this.animate();

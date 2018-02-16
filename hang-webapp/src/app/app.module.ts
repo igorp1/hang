@@ -11,6 +11,8 @@ import { WordDisplayComponent } from './word-display/word-display.component';
 import { KeyBoardComponent } from './key-board/key-board.component';
 import { HangingManComponent } from './hanging-man/hanging-man.component';
 
+import { GameApiService } from './_services/game-api.service';
+
 export const ROUTES: Routes = [
   { path: '', component: HomePageComponent },
   { path: 'game/:code', component: GamePageComponent },
@@ -32,7 +34,7 @@ export const ROUTES: Routes = [
     HttpModule,
     RouterModule.forRoot(ROUTES)
   ],
-  providers: [],
+  providers: [GameApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
