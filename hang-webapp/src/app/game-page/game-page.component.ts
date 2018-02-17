@@ -45,7 +45,7 @@ export class GamePageComponent implements OnInit {
         );
   }
   
-  showChallengeLink(gameCode, issue=undefined){
+  showChallengeLink(gameCode, issue:Response=null){
     let pathArr = location.pathname.split('/');
     pathArr.pop();
     pathArr.push(gameCode);
@@ -61,7 +61,7 @@ export class GamePageComponent implements OnInit {
     }
     else{
       this.challengeModalConfig = {
-        title:'Share the link below',
+        title:issue.text(),
         cancelButtonLabel:'Ok!'
       }
     }

@@ -75,10 +75,14 @@ class Game(db.Model):
         return fails_count
 
     '''
-    Returns how many characters were found in the word.
+    Returns how many characters were found in the word. rep
     '''
     def count_chars_found(self):
-        return len(self.get_found_positions())
+        count = 0
+        positions = self.get_found_positions()
+        for x in positions:
+            count += len(positions[x])
+        return count
 
     '''
     Returns an array of all the position 
@@ -174,7 +178,6 @@ class Game(db.Model):
         db.session.add(game)
         db.session.commit()
         return game.code
-
 
 class Guess(db.Model):
     id = db.Column(db.Integer, primary_key=True)

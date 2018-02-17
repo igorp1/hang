@@ -230,6 +230,17 @@ class HangTestCase(TestCase):
         assert result
         assert Game.by_code(result).word == word
 
+    def test_game_long_word(self):
+        W = "12345678901234567890123456789012345678901234567890"
+        g = Game(W)
+        self.db.session.add(g)
+        self.db.session.commit()
+
+        for x in range(0,10):
+            g.check_guess(str(x))
+
+        assert g.status == "won"
+
     # SCORE 
     def test_score_save(self):
         # create game 
@@ -292,7 +303,7 @@ class HangTestCase(TestCase):
         assert result[0]['word'] == g.word
         assert result[3]['player'] == s4.player
         
-        
+
         
 
     
