@@ -1,3 +1,33 @@
-<p>
-  leaderboard-page works!
-</p>
+
+<div class="center fancy-font"><h1>Leaders</h1></div>
+
+<div id="leaderboard-container" *ngIf="scores.length > 0">
+  <div class="pure-g leaderboard-row">
+      <div class="pure-u-3-24"></div>
+      <div class="pure-u-9-24">Player</div>
+      <div class="pure-u-9-24">Word</div>
+      <div class="pure-u-3-24">Score</div>
+    </div>
+  <div class="pure-g leaderboard-row" *ngFor="let score of scores; let i = index">
+    <div class="pure-u-3-24">{{getLeaderboardIndexLabel(i)}}.&nbsp;&nbsp;</div>
+    <div class="pure-u-9-24">{{score.player}}</div>
+    <div class="pure-u-9-24">{{score.word}}</div>
+    <div class="pure-u-3-24">{{score.score}}</div>
+  </div>
+</div>
+
+<div class="center" style="margin-top:5em" *ngIf="scores.length == 0 && !errorFlag">
+  <h1>🏆</h1>
+  <h3>No scores so far...</h3>
+</div>
+
+<div class="center" style="margin-top:5em" *ngIf="loading && !errorFlag">
+  <img src="assets/loading.gif" height="60px">
+  <h3>Loading...</h3>
+</div>
+
+<div class="center" style="margin-top:5em" *ngIf="errorFlag">
+    <h1>👾</h1>
+    <h3>Oops, something went wrong here.</h3>
+  </div>
+

@@ -1,9 +1,10 @@
 from flask_testing import TestCase
-from flask import url_for
+from flask import url_for, jsonify
 import hang
 import os
 import json
-from hang.models import LibraryWord, Game, Guess
+from hang.models import LibraryWord, Game, Guess, Score
+from sqlalchemy import desc
 
 
 class HangTestCase(TestCase):
@@ -27,6 +28,19 @@ class HangTestCase(TestCase):
         os.environ["APP_ENV"] = "dev"
         hang.db.session.remove()
         hang.db.drop_all()
+
+    # MISC
+    def test_require_key_decorator(self):
+        # no key 
+        response = self.client.put( url_for("word.add", word="Killmonger") )
+        assert response.status_code == 401
+
+        # adding key
+        KEY = "TEST_KEY"
+        word_to_add = "Wakanda"
+        response = self.client.put( url_for("word.add", word=word_to_add, key=KEY) )
+        assert response.status_code == 200
+        assert LibraryWord.query.filter_by(word=word_to_add).first()
 
     # WORD TESTS
     def test_word_is_valid(self):
@@ -80,18 +94,6 @@ class HangTestCase(TestCase):
                 print LibraryWord.get_random()
             print "=============================\n"
 
-    def test_require_key_decorator(self):
-        # no key 
-        response = self.client.put( url_for("word.add", word="Killmonger") )
-        assert response.status_code == 401
-
-        # adding key
-        KEY = "TEST_KEY"
-        word_to_add = "Wakanda"
-        response = self.client.put( url_for("word.add", word=word_to_add, key=KEY) )
-        assert response.status_code == 200
-        assert LibraryWord.query.filter_by(word=word_to_add).first()
-
     def test_word_add(self):
         
         KEY = "TEST_KEY"
@@ -108,11 +110,11 @@ class HangTestCase(TestCase):
         assert not LibraryWord.query.filter_by(word=word_to_remove).first()
         
     # GAME TESTS
-    def get_game_by_code(self):
+    def test_game_by_code(self):
         # make new game
         g = Game("molding")
-        db.session.add(g)
-        db.session.commit()
+        self.db.session.add(g)
+        self.db.session.commit()
 
         # get by code
         CODE = g.code
@@ -175,7 +177,7 @@ class HangTestCase(TestCase):
                                     content_type='application/json')
         assert response.status_code == 400
 
-    def test_load_game(self):
+    def test_game_load(self):
 
         # create game => 
         g = Game.start_new()
@@ -216,6 +218,81 @@ class HangTestCase(TestCase):
         assert result['foundChars'][L1] == [0]
         assert result['mistakeCount'] == 0
 
+    def test_game_challenge(self):
+        word = 'element'
+
+        response = self.client.post( url_for("game.challenge"),
+                                    data=json.dumps(dict(word=word)),
+                                    content_type='application/json')
+        assert response.status_code == 200
+
+        result = response.get_data(as_text=True)
+        assert result
+        assert Game.by_code(result).word == word
+
+    # SCORE 
+    def test_score_save(self):
+        # create game 
+        g = Game.start_new()
+        game_code = g.code
+        g.word = 'EASY'
+        self.db.session.commit()
+
+        # play
+        g.check_guess('E')
+        g.check_guess('A')
+        g.check_guess('S')
+        g.check_guess('Y')
+
+        assert g.status == 'won'
+
+        # save score
+        player = "T'Challa"
+        response = self.client.post( url_for("leaderboard.save"),
+                                    data=json.dumps(dict(player=player, game=g.code)),
+                                    content_type='application/json')
+        assert response.status_code == 200
+
+        s = Score.query.order_by(desc(Score.id)).first()
+
+        assert s.player == player
+        assert s.word == g.word
+        assert s.score == g.calculate_score()
+
+    def test_score_get(self):
+
+        # make game
+        g = Game('Amsterdam')
+        self.db.session.add(g)
+        self.db.session.commit()
+
+        # mock scores
+        s1 = Score('PLAYER 1', g)
+        s1.score = 100
+        self.db.session.add(s1)
+        s2 = Score('PLAYER 2', g)
+        s2.score = 30
+        self.db.session.add(s2)
+        s3 = Score('PLAYER 3', g)
+        s3.score = 112
+        self.db.session.add(s3)
+        s4 = Score('PLAYER 4', g) 
+        s4.score = 10
+        self.db.session.add(s4)
+        self.db.session.commit()
+
+        response = self.client.get( url_for("leaderboard.load") )
+
+        assert response.status_code == 200
+
+        result = json.loads(response.get_data(as_text=True))
+
+        assert len(result) == 4
+        assert result[0]['player'] == s3.player
+        assert result[0]['word'] == g.word
+        assert result[3]['player'] == s4.player
+        
+        
         
 
     

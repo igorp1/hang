@@ -1,0 +1,15 @@
+.leaderboard-row {
+    padding-top: .5em;
+    padding-bottom: .5em;
+    line-height: 1.5em;
+}
+
+.leaderboard-row:nth-child(1){
+    font-weight: bold;
+}
+
+.leaderboard-row div:nth-child(1){
+    font-weight: bold;
+    color:  #e62546;
+    text-align: right;
+}

@@ -1,0 +1,9 @@
+<div class="backdrop" *ngIf="show">
+  <div class="main-window center"> 
+    <h2 class="fancy-font">{{config.title}}</h2>
+    <input *ngIf="config.askInput || config.inputPlaceholder" placeholder="{{config.inputPlaceholder}}" [(ngModel)]="input" ><br>
+    <div *ngIf="config.link" class="link-container"><a href="{{config.link}}">{{config.link}}</a></div>
+    <button *ngIf="config.okButtonLabel" (click)="done(input)">{{config.okButtonLabel}}</button>
+    <button (click)="cancel()" *ngIf="config.cancelButtonLabel">{{config.cancelButtonLabel}}</button>
+  </div>
+</div>

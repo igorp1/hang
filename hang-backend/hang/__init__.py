@@ -30,5 +30,7 @@ def build_app(config_name):
     from .game import game as game_blueprint
     app.register_blueprint(game_blueprint, url_prefix="/game") 
 
+    from .leaderboard import leaderboard as leaderboard_blueprint
+    app.register_blueprint(leaderboard_blueprint, url_prefix="/leaderboard")
     return app
 

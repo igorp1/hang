@@ -5,7 +5,7 @@ from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
 # Import models
-from hang.models import LibraryWord, Game, Guess
+from hang.models import LibraryWord, Game, Guess, Score
 
 # Build app
 CONFIG_NAME = get_current_env()

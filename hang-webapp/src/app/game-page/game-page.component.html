@@ -12,8 +12,12 @@
       <div class="center">
           <div class="center">
               <h2 class="fancy-font">🏆 Good job!</h2>
-              <button>PLAY AGAIN</button>
-              <button>CHALLENGE A FRIEND</button>
+              <button (click)="newGame()">PLAY AGAIN</button><br>
+              <ng-container *ngIf="_game.allowSaveScore">
+                <button (click)="showGameModal=true">SAVE SCORE</button><br>
+                <simple-modal [(show)]="showGameModal" [config]="_game.saveScoreModalConfig" (value)="_game.saveScoreForPlayer($event)"></simple-modal>
+              </ng-container>
+              <button (click)="makeChallenge()">CHALLENGE A FRIEND</button><br>
           </div>
       </div>
     </ng-container>
@@ -22,13 +26,13 @@
       <!-- LOST MESSAGE -->
       <div class="center">
           <h2 class="fancy-font">😱 Oh no!</h2>
-          <button>TRY AGAIN</button>
-          <button>CHALLENGE A FRIEND</button>
+          <button (click)="newGame()">TRY AGAIN</button>
+          <button (click)="makeChallenge()">CHALLENGE A FRIEND</button>
       </div>
     </ng-container>
   </ng-container>
   <ng-container *ngIf="_game.errorFlag">
-      <!-- WON MESSAGE -->
+      <!-- ERROR MESSAGE -->
       <div class="center">
           <div class="center">
               <h2 class="fancy-font">👾 Something went wrong!</h2>
@@ -43,3 +47,10 @@
   </div>
   
 </div>
+
+<!-- CHALLENGE MODALS -->
+<simple-modal [(show)]="showMakeChallengeModal" 
+              [config]="{title:'Whats your word?', inputPlaceholder:'word', okButtonLabel:'DONE', cancelButtonLabel:'BACK'}" 
+              (value)="makeChallengeLink($event)"></simple-modal>
+<simple-modal [(show)]="showReadyChallengeModal" 
+              [config]="challengeModalConfig"></simple-modal>

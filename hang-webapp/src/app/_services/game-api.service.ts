@@ -3,6 +3,7 @@ import { Http, Response, Headers } from '@angular/http';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
+import { Title } from '@angular/platform-browser';
 
 @Injectable()
 export class GameApiService {
@@ -36,8 +37,17 @@ export class GameApiService {
 
   loading : boolean = false;
   errorFlag : boolean = false;
+  allowSaveScore : boolean = false;
 
+  // CONFIG
   API_base : string = "http://localhost:5000";
+  saveScoreModalConfig : any = {
+    title:"What's your name",
+    askInput:true,
+    inputPlaceholder:'name',
+    okButtonLabel:'SAVE',
+    cancelButtonLabel:'CANCEL'
+  }
 
   constructor(private http : Http) { }
 
@@ -110,6 +120,9 @@ export class GameApiService {
         if(!guessResult['found']){this.mistakes+=1;}
         this.updateWord(guess,guessResult['positions']);
         this.status = guessResult['status'];
+        if(guessResult['status'] == 'won'){
+          this.allowSaveScore = true
+        }
       },
       (err)=>this.errorHandler(err)
     );
@@ -131,5 +144,22 @@ export class GameApiService {
     });
 
   }
+
+  loadTopScores(){
+    return this.http.get(this.API_base + '/leaderboard/load')
+            .map((res: Response)=>res.json())
+  }
+
+  saveScoreForPlayer(player:  string){
+    this.http.post(this.API_base + '/leaderboard/save',
+                    {game:this.gameCode, player:player})
+                    .subscribe();
+  }
+
+  makeChallenge(word : string) : Observable<string>{
+    return this.http.post(this.API_base + "/game/challenge", {word:word})
+            .map( (res : Response)=>res.text() )
+  }
+  
 
 }

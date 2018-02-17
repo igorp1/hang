@@ -1,5 +1,6 @@
 import uuid, re
 from hang import db
+from sqlalchemy import desc
 from sqlalchemy.sql.expression import func
 
 class LibraryWord(db.Model):
@@ -46,7 +47,7 @@ class Game(db.Model):
     status = db.Column(db.String(10), nullable=False, default='playing') # playing|won|lost
     guesses = db.relationship("Guess", backref="game", lazy="dynamic")
 
-    def __init__(self, word, created_by=None):
+    def __init__(self, word):
         self.code = uuid.uuid4().hex[:6]
         self.word = word
         self.status = 'playing'
@@ -133,6 +134,18 @@ class Game(db.Model):
             mistakeCount = self.count_wrong_guesses()
         )
 
+    '''
+    Calculates the score of a given game
+    '''
+    def calculate_score(self):
+        if(self.status == 'playing' or self.status == 'lost'):
+            return 0
+        else:
+            L = len(self.word)
+            F = self.count_chars_found()
+            M = self.count_wrong_guesses()
+            G = L + M
+            return round(100*(F-M)/(L+G))
 
     '''
     Returns the game object of a given code
@@ -151,6 +164,17 @@ class Game(db.Model):
         db.session.add(game)
         db.session.commit()
         return game
+
+    '''
+    Creates a "challenge" game with a given word.
+    '''
+    @staticmethod 
+    def make_challenge_from_word(word):
+        game = Game(word)
+        db.session.add(game)
+        db.session.commit()
+        return game.code
+
 
 class Guess(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -179,4 +203,35 @@ class Guess(db.Model):
     def is_guess_on_game(guess, game_code):
         g = Game.by_code(game_code)
         return bool( g.guesses.filter_by(letter=guess).first() )
+
+class Score(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    player = db.Column(db.String(6))
+    word = db.Column(db.String(45))
+    score = db.Column(db.Integer)
+
+    def __init__(self, player, game):
+        self.player = player
+        self.word = game.word
+        self.score = game.calculate_score()
+
+    def serialize(self):
+        return {
+            "id" : self.id,
+            "player" : self.player,
+            "word" : self.word,
+            "score" : self.score, 
+        }
+
+    @staticmethod
+    def get_top(limit_num=10, serialize=True):
+        query_res = Score.query.order_by(desc(Score.score)).limit(limit_num).all()
+        if not serialize:
+            return query_res
+        else:
+            score_arr = []
+            for s in query_res:
+                score_arr += [s.serialize()]
+            return score_arr
+
 

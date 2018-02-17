@@ -1,0 +1,41 @@
+.backdrop{
+    position: fixed;
+    top: 0;
+    left:0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(8, 8, 8, 0.61);
+}
+
+.main-window{
+    top: 4em;
+    padding: 1em;
+    width: 320px;
+    color: black;
+    position: fixed;
+    margin-right: auto;
+    border-radius: .2em;
+    background-color: #4E4E50;
+    border: 2px solid #e62546;
+    left: calc(50vw - 160px - 1em);
+}
+
+input{
+    margin-bottom: 1em;
+    padding: .4em;
+    width: 90%;
+    background: transparent;
+    border: none;
+    border-bottom: solid 3px #e72546;
+    border-radius: .2em;
+    outline: none;
+}
+
+.link-container{
+    font-family: monospace;
+    margin-bottom: 1.5em;
+}
+
+.link-container a{
+    color: whitesmoke;
+}

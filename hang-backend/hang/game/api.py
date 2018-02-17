@@ -1,6 +1,6 @@
 from . import game
 from .. import db
-from ..models import Game, Guess
+from ..models import Game, Guess, LibraryWord
 from flask import jsonify, request
 
 @game.route('/new', methods=['GET'])
@@ -15,7 +15,7 @@ def new():
 @game.route('/<code>/check', methods=['POST'])
 def check(code):
     if 'guess' not in request.get_json():
-        return "Must pass letter in the request form", 400
+        return "Must pass letter in the request json", 400
     if Game.by_code(code) is None:
         return 'Game not found', 404
     if not Guess.is_valid(request.get_json()["guess"]):
@@ -32,4 +32,13 @@ def load(code):
         return 'Game not found', 404
 
     return jsonify( Game.by_code(code).get_load_object() ), 200
+    
+@game.route('/challenge', methods=['POST'])
+def challenge():
+    if 'word' not in request.get_json():
+        return 'You must pass a word to this request', 400
+    if not LibraryWord.is_valid_word( request.get_json()['word'] ):
+        return 'You mus only pass a single word that only contains letters and numbers', 400
+    
+    return Game.make_challenge_from_word(request.get_json()['word']), 200
     
