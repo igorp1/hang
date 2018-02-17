@@ -5,15 +5,19 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { Title } from '@angular/platform-browser';
 
+import { ModalConfig } from '../simple-modal/simple-modal.component';
+
 @Injectable()
 export class GameApiService {
 
+  // =====> Game variables
   gameID : number;
   gameCode : string;
+  wordDisplay : string;
   mistakes : number = 0;
   attempts : Array<string> = [];
-  wordDisplay : string;
 
+  // =====> Setters
   _wordLength : number;
   set wordLength(value : number){ 
     this._wordLength = value; 
@@ -35,22 +39,24 @@ export class GameApiService {
     }
   }
 
+  // =====> Page control variables
   loading : boolean = false;
   errorFlag : boolean = false;
   allowSaveScore : boolean = false;
 
-  // CONFIG
+  // =====> Save Score ModalConfig
   API_base : string = "http://localhost:5000";
-  saveScoreModalConfig : any = {
-    title:"What's your name",
+  saveScoreModalConfig : ModalConfig = new ModalConfig({
     askInput:true,
-    inputPlaceholder:'name',
     okButtonLabel:'SAVE',
+    title:"What's your name",
+    inputPlaceholder:'name',
     cancelButtonLabel:'CANCEL'
-  }
+  });
 
   constructor(private http : Http) { }
 
+  // =====> State controls
   cleanup(){
     this.gameID  = undefined;
     this.gameCode  = undefined;
@@ -93,7 +99,7 @@ export class GameApiService {
           this.status = 'playing';
           this.wordLength = d.wordLength;
           Object.keys(d.foundChars).forEach(
-            (key:string)=>this.updateWord(key, d.foundChars[key]) 
+            (key:string)=>this.updateWordDisplay(key, d.foundChars[key]) 
           );
         }
         this.loading = false;
@@ -103,22 +109,11 @@ export class GameApiService {
     ;
   }
 
-  loadGame() : Observable<any> {
-    return this.http.get(this.API_base + `/game/${this.gameCode}/load`)
-            .map( (res: Response) => res.json());
-  }
-
-  errorHandler(res:Response){
-    this.loading = false;
-    this.errorFlag = true;
-    this.wordDisplay = res.status == 0 ? '500' : String(res.status);
-  }
-
   checkGuess(guess : string){
     this.fetchGuessPositions(guess).subscribe(
       (guessResult)=>{
         if(!guessResult['found']){this.mistakes+=1;}
-        this.updateWord(guess,guessResult['positions']);
+        this.updateWordDisplay(guess,guessResult['positions']);
         this.status = guessResult['status'];
         if(guessResult['status'] == 'won'){
           this.allowSaveScore = true
@@ -128,32 +123,36 @@ export class GameApiService {
     );
   }
 
-  fetchGuessPositions(guess : string) : Observable< Array<any> >{
-    return this.http.post(this.API_base + `/game/${this.gameCode}/check`,
-            {'guess':guess})
-            .map((res : Response)=> res.json());
-  }
-
-  updateWord(character: string, positions : Array<number>){
-
+  updateWordDisplay(character: string, positions : Array<number>){
     positions.forEach((index)=>{
       let orginalWordDisplay = this.wordDisplay;
       this.wordDisplay = orginalWordDisplay.substring(0,index);
       this.wordDisplay += character;
       this.wordDisplay += orginalWordDisplay.substring(index+1);
     });
-
   }
 
-  loadTopScores(){
+  // =====> API Callers
+  loadGame() : Observable<any> {
+    return this.http.get(this.API_base + `/game/${this.gameCode}/load`)
+            .map( (res: Response) => res.json());
+  }
+
+  fetchGuessPositions(guess : string) : Observable< Array<any> >{
+    return this.http.post(this.API_base + `/game/${this.gameCode}/check`,
+            {'guess':guess})
+            .map((res : Response)=> res.json());
+  }
+
+  errorHandler(res:Response){
+    this.loading = false;
+    this.errorFlag = true;
+    this.wordDisplay = res.status == 0 ? '500' : String(res.status);
+  }
+
+  loadTopScores() : Observable<any> {
     return this.http.get(this.API_base + '/leaderboard/load')
             .map((res: Response)=>res.json())
-  }
-
-  saveScoreForPlayer(player:  string){
-    this.http.post(this.API_base + '/leaderboard/save',
-                    {game:this.gameCode, player:player})
-                    .subscribe();
   }
 
   makeChallenge(word : string) : Observable<string>{
@@ -161,5 +160,10 @@ export class GameApiService {
             .map( (res : Response)=>res.text() )
   }
   
+  saveScoreForPlayer(player:  string){
+    this.http.post(this.API_base + '/leaderboard/save',
+                    {game:this.gameCode, player:player})
+                    .subscribe();
+  }
 
 }

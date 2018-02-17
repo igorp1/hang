@@ -36,9 +36,11 @@ def load(code):
 @game.route('/challenge', methods=['POST'])
 def challenge():
     if 'word' not in request.get_json():
-        return 'You must pass a word to this request', 400
+        return 'We need a word to create a challenge.', 400
+    if request.get_json()['word'] == "" :
+        return 'We need a word to create a challenge.', 400
     if not LibraryWord.is_valid_word( request.get_json()['word'] ):
-        return 'You mus only pass a single word that only contains letters and numbers', 400
+        return 'We can only make challenges of single alphanumeric words.', 400
     
     return Game.make_challenge_from_word(request.get_json()['word']), 200
     

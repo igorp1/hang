@@ -1,17 +1,19 @@
+@import '../styles.scss';
+
 #main-container{
     margin-top: 3em;
     margin-bottom: 3em;
 }
 
 header{
-    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
-    text-align: center;
-    background-color: #1A1A1D;
-    position: fixed;
     top:0;
     left:0;
     width: 100vw;
     height: 3.5em;
+    position: fixed;
+    text-align: center;
+    box-shadow: $shadow;
+    background-color: $dark;
 }
 
 header > h1{
@@ -29,23 +31,21 @@ footer{
     width: 100vw;
     position: fixed;
     padding-bottom: .2em; 
-    border-top: solid 1px black; 
-    background-color: #4E4E50;
+    border-top: solid 1px $dark; 
+    background-color: $background;
 }
 
 footer span{
-    margin-right: .5em;
-    vertical-align: -webkit-baseline-middle;
     float:left;
     margin:.5em;
+    margin-right: .5em;
+    vertical-align: -webkit-baseline-middle;
 }
 
 img{
+    margin:.3em;
     height: 25px;
     float: right;
-    margin:.3em;
     margin-top:.5em;
 }
-
-a{ cursor: pointer; margin-right: 1em;}
 

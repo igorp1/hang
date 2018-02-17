@@ -5,11 +5,11 @@ import { GameApiService } from '../_services/game-api.service';
 @Component({
   selector: 'app-home-page',
   templateUrl: './home-page.component.html',
-  styleUrls: ['./home-page.component.css']
+  styleUrls: ['./home-page.component.scss']
 })
 export class HomePageComponent implements OnInit {
 
-  greeting : String = "Hello";
+  greeting : String;
   greetings : Array<String> = [
     "Ready to play some hangman?",
     "Welcome!",
@@ -31,6 +31,5 @@ export class HomePageComponent implements OnInit {
   openLeaderboard(){
     this.router.navigate(["/top10"]);
   }
-  
 
 }

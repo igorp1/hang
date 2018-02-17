@@ -9,7 +9,7 @@
     <button (click)="newGame()">
       <ng-container [ngSwitch]="this._game.loading">
           <ng-container *ngSwitchCase="true">
-              loading game&nbsp;<img style="height:1em;" src="assets/loading.gif">
+              loading game&nbsp;<img height="14px" src="assets/loading.gif">
           </ng-container>
         <ng-container *ngSwitchCase="false">NEW GAME</ng-container>
       </ng-container>

@@ -1,7 +1,9 @@
+@import '../../styles.scss';
+
 .leaderboard-row {
     padding-top: .5em;
-    padding-bottom: .5em;
     line-height: 1.5em;
+    padding-bottom: .5em;
 }
 
 .leaderboard-row:nth-child(1){
@@ -9,7 +11,7 @@
 }
 
 .leaderboard-row div:nth-child(1){
+    color:  $primary;
     font-weight: bold;
-    color:  #e62546;
     text-align: right;
 }

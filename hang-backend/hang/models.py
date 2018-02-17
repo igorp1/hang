@@ -149,7 +149,8 @@ class Game(db.Model):
             F = self.count_chars_found()
             M = self.count_wrong_guesses()
             G = L + M
-            return round(100*(F-M)/(L+G))
+            calculated_score = round(100*(F - M)/(L+G))
+            return calculated_score if calculated_score > 0 else 0
 
     '''
     Returns the game object of a given code

@@ -2,15 +2,16 @@ import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 @Component({
   selector: 'keyboard',
   templateUrl: './key-board.component.html',
-  styleUrls: ['./key-board.component.css']
+  styleUrls: ['./key-board.component.scss']
 })
 export class KeyBoardComponent implements OnInit {
 
   characterSetup: Array< Array<string> >;
+
   @Input() disabled:Array<string> = [];
   @Output() disabledChange : EventEmitter<Array<string>> = new EventEmitter<Array<string>>();
+  
   @Output() readKey: EventEmitter<String> = new EventEmitter();
-
 
   constructor() { }
 

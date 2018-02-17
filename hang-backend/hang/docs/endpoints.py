@@ -25,6 +25,30 @@ api_endpoints = [
         'protected':False
     },
     {
+        'name':'Make challenge',
+        'description':'Allows user to create challenege game.',
+        'urlshow':'/game/challenge',
+        'url':'game/load',
+        'verb':'POST',
+        'protected':False
+    },
+    {
+        'name':'Save to Leaderboard',
+        'description':'Saves a player\'s score',
+        'urlshow':'/game/challenge',
+        'url':'game/load',
+        'verb':'POST',
+        'protected':False
+    },
+    {
+        'name':'Load Leaderboard',
+        'description':'Loads top 10 players.',
+        'urlshow':'/game/challenge',
+        'url':'game/load',
+        'verb':'GET',
+        'protected':False
+    },
+    {
         'name':'Add Word',
         'description':'Adds new word to the hangman library.',
         'url':'word/add/example',

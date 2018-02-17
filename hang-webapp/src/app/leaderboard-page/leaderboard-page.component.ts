@@ -4,11 +4,12 @@ import { GameApiService } from '../_services/game-api.service';
 @Component({
   selector: 'app-leaderboard-page',
   templateUrl: './leaderboard-page.component.html',
-  styleUrls: ['./leaderboard-page.component.css']
+  styleUrls: ['./leaderboard-page.component.scss']
 })
 export class LeaderboardPageComponent implements OnInit {
 
   scores : Array<any> = [];
+  
   errorFlag : boolean;
   loading : boolean;
 
@@ -32,7 +33,5 @@ export class LeaderboardPageComponent implements OnInit {
     if(n in top3) return top3[n];
     else return `${n} `;
   }
-  
-
 
 }

@@ -1,0 +1,74 @@
+/* FONTS */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,400,700');
+@import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
+@import url('https://fonts.googleapis.com/css?family=VT323');
+/* PURE */
+@import url('https://unpkg.com/purecss@1.0.0/build/pure-min.css');
+@import url('https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css');
+
+/* THEME  */ 
+$primary            : #e62546;
+$secondary          : #6F2232;
+$background         : #4E4E50;
+$dark               : #1A1A1D;
+$light              : #d0d0d0;
+$fancy-font         : 'Kaushan Script', cursive;
+$video-game-font    : 'VT323', monospace;
+$shadow             : 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+
+body {
+    padding: 1em;
+    font-family: 'Open Sans', sans-serif;
+    background-color: $background;
+}
+
+.center{
+    text-align: center
+}
+
+.breath-top{
+    margin-top:5em;
+}
+
+.fancy-font{
+    font-family: $fancy-font;
+}
+
+a{ 
+    cursor: pointer;
+    margin-right: 1em;
+}
+
+button{
+    outline: 0;
+    padding: 1em;
+    margin: .65em;
+    color: $primary;
+    cursor: pointer;
+    font-weight: bold;
+    padding-top: .5em;
+    padding-bottom: .5em;
+    border-radius: .25em;
+    border: solid 3px $dark;
+    background-color: $light;
+    box-shadow: 1px 1px 0px $primary;
+    transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+
+    &:not(.disabled):hover {
+        background-color: lighten( $light, 10% );
+        box-shadow: 2px 2px 0px $primary;
+    }
+
+    &:not(.disabled):active {
+        color: $dark;
+        background-color: $primary;
+        box-shadow: 1px 1px 0px $primary;
+    }
+
+    &.disabled{
+        cursor: no-drop;
+        color: $background;
+        background-color: $dark;
+    }
+
+}

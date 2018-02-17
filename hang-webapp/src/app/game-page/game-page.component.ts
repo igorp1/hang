@@ -5,10 +5,11 @@ import { GameApiService } from '../_services/game-api.service';
 @Component({
   selector: 'app-game-page',
   templateUrl: './game-page.component.html',
-  styleUrls: ['./game-page.component.css']
+  styleUrls: ['./game-page.component.scss']
 })
 export class GamePageComponent implements OnInit {
 
+  // CHALLENGE MODALS CONTROL VARS
   showMakeChallengeModal : boolean;
   showReadyChallengeModal : boolean;
   challengeModalConfig : any = {};
@@ -23,6 +24,7 @@ export class GamePageComponent implements OnInit {
 
   ngOnInit() { }
 
+  // =====> game controls
   typedKey(key:string){
     this._game.checkGuess(key);
   }
@@ -33,6 +35,7 @@ export class GamePageComponent implements OnInit {
     );
   }
   
+  // =====> challenge controls
   makeChallenge(){
     this.showMakeChallengeModal = true;
   }

@@ -5,7 +5,7 @@ import * as THREE from 'three';
 @Component({
   selector: 'word-display',
   templateUrl: './word-display.component.html',
-  styleUrls: ['./word-display.component.css']
+  styleUrls: ['./word-display.component.scss']
 })
 export class WordDisplayComponent implements OnInit {
 
