@@ -1,6 +1,6 @@
 import os
 from functools import wraps
-from configs import configs 
+from . import configs 
 from flask import request, abort
 
 '''

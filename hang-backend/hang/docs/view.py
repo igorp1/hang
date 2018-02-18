@@ -1,5 +1,5 @@
 from . import docs
-from endpoints import api_endpoints
+from .endpoints import api_endpoints
 from flask import render_template
 
 @docs.route('/', methods=['GET'])

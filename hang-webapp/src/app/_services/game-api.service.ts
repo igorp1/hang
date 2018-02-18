@@ -5,6 +5,8 @@ import 'rxjs/add/observable/of';
 import 'rxjs/add/operator/map';
 import { Title } from '@angular/platform-browser';
 
+import {environment} from '../../environments/environment';
+
 import { ModalConfig } from '../simple-modal/simple-modal.component';
 
 @Injectable()
@@ -45,7 +47,6 @@ export class GameApiService {
   allowSaveScore : boolean = false;
 
   // =====> Save Score ModalConfig
-  API_base : string = "http://localhost:5000";
   saveScoreModalConfig : ModalConfig = new ModalConfig({
     askInput:true,
     okButtonLabel:'SAVE',
@@ -54,7 +55,12 @@ export class GameApiService {
     cancelButtonLabel:'CANCEL'
   });
 
-  constructor(private http : Http) { }
+
+  API_base : string = "https://hang-backend.herokuapp.com";
+
+  constructor(private http : Http) { 
+    this.API_base = environment.API_base;
+  }
 
   // =====> State controls
   cleanup(){

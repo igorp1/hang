@@ -16,7 +16,7 @@ export class HomePageComponent implements OnInit {
     "Wanna <hang>"
   ];
 
-  constructor(private router: Router, private _game : GameApiService) { }
+  constructor(private router: Router, public _game : GameApiService) { }
 
   ngOnInit() {
     this.greeting = this.greetings[Math.floor(Math.random() * this.greetings.length)];

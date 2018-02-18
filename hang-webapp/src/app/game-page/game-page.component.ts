@@ -18,7 +18,7 @@ export class GamePageComponent implements OnInit {
   JSON : JSON = JSON;
   viewDebugger :  boolean = false;
 
-  constructor(private route : ActivatedRoute, private router : Router, private _game : GameApiService) {
+  constructor(private route : ActivatedRoute, private router : Router, public _game : GameApiService) {
     route.params.subscribe( (d) => this._game.setupWithCode(d.code) );
   }
 
